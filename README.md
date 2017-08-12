@@ -13,8 +13,8 @@ http://tech.lezhin.com/events/data-challenge-pyconkr-2017
   * DNN, 3 Hidden layer, ReLu
 * 98~99% Accuracy 
   * 랜덤하게 7:3 = Learning set : Test set 분리함
-  * 6번 시도
-* Processing time : 272 seconds
+  * 7번 시도
+* Processing time : 241 seconds
   * 마지막 시도 기준
 
 
