@@ -58,7 +58,7 @@ train_x = features[rnd_indices]
 train_y = labels[rnd_indices]
 test_x = features[~rnd_indices]
 test_y = labels[~rnd_indices]
-print("train row count : %d, test row count : %d" % (train_x.shape[0], test_x.shape[1]))
+print("train row count : %d, test row count : %d" % (train_x.shape[0], test_x.shape[0]))
 
 feature_count = train_x.shape[1]
 label_count = train_y.shape[1]
@@ -67,7 +67,7 @@ print(feature_count, label_count)
 
 # In[9]:
 
-training_epochs = 100
+training_epochs = 90
 learning_rate = 0.01
 cost_history = np.empty(shape=[1],dtype=float)
 nb_classes = 2
@@ -153,7 +153,7 @@ with tf.Session() as sess:
             sess.run(optimizer, feed_dict={X: train_x[start_idx:end_idx], Y: train_y[start_idx:end_idx], p_keep_hidden: training_dropout_h})
 
         loss, acc = sess.run([cost, accuracy], feed_dict={
-                                 X: train_x, Y: train_y, p_keep_input: training_dropout_i, p_keep_hidden: training_dropout_h})
+                                 X: train_x, Y: train_y, p_keep_hidden: training_dropout_h})
         cost_history = np.append(cost_history, acc)
         if step % 4 == 0:
             print("Step: {:5}\tLoss: {:.3f}\tAcc: {:.2%}".format(
