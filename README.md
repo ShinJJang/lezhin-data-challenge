@@ -19,6 +19,7 @@ http://tech.lezhin.com/events/data-challenge-pyconkr-2017
 
 
 
+
 ## Tensorflow 접근 방식
 
 * DNN, Hidden layer는 3개의 ReLu
@@ -42,7 +43,7 @@ http://tech.lezhin.com/events/data-challenge-pyconkr-2017
 * `ResourceExhaustedError: OOM when allocating tensor with shape[895431,174]`
   * batch로 나누어서 학습
 
-  ​
+
 
 
 ## 개발 환경
@@ -51,6 +52,11 @@ http://tech.lezhin.com/events/data-challenge-pyconkr-2017
 * i7 6700
 * GTX 1080
 * 16GB Memory
+* Python 3.6.1 :: Anaconda 4.4.0 (64-bit)
+* tensorflow-gpu==1.2.1
+* numpy==1.12.1
+* pandas==0.20.1
+* scipy==0.19.0
 
 
 
@@ -58,6 +64,4 @@ http://tech.lezhin.com/events/data-challenge-pyconkr-2017
 ## 기타
 
 * 데이터는 커서 같이 올리지 않았습니다.
-
-  ​
 
