@@ -8,6 +8,7 @@ get_ipython().magic('matplotlib inline')
 import tensorflow as tf
 import numpy as np
 import pandas as pd
+import time
 
 from numpy import genfromtxt
 from scipy import stats
@@ -15,28 +16,33 @@ from scipy import stats
 
 # In[2]:
 
+start_time = time.time()
+
+
+# In[3]:
+
 def read_data(file_name):
     df = pd.read_csv(file_name, sep='\t', header=None)
     return df
 
 
-# In[3]:
+# In[4]:
 
 df = read_data('lezhin_public_dataset_training.tsv')
 
 
-# In[4]:
+# In[5]:
 
 # df.iloc[:, :20]
 del df[7], df[8], df[16], df[18]
 
 
-# In[5]:
+# In[6]:
 
 df.describe()
 
 
-# In[6]:
+# In[7]:
 
 features = df.iloc[:, 1:].values
 labels = df.iloc[:, :1].values
@@ -44,7 +50,7 @@ print(stats.describe(features).variance)
 print(features.shape, labels.shape)
 
 
-# In[7]:
+# In[8]:
 
 rnd_indices = np.random.rand(len(features)) < 0.70
 
@@ -59,7 +65,7 @@ label_count = train_y.shape[1]
 print(feature_count, label_count)
 
 
-# In[8]:
+# In[9]:
 
 training_epochs = 100
 learning_rate = 0.01
@@ -74,7 +80,7 @@ Y_one_hot = tf.reshape(Y_one_hot, [-1, nb_classes])
 print("reshape", Y_one_hot)
 
 
-# In[9]:
+# In[10]:
 
 def init_weights(shape):
     return tf.Variable(tf.random_normal(shape, stddev=0.1)), tf.Variable(tf.random_normal([shape[1]]))
@@ -85,7 +91,7 @@ def make_hidden_layer(previous_h, weight, bias, p_keep_hidden, is_dropout=True):
         h = tf.nn.dropout(h, p_keep_hidden)
     return h
 
-def model(X, p_keep_input, p_keep_hidden):
+def model(X, p_keep_hidden):
     s_1 = feature_count + 2
     s_2 = feature_count + 2
     s_3 = feature_count
@@ -102,22 +108,21 @@ def model(X, p_keep_input, p_keep_hidden):
     return tf.matmul(h3, w_o) + b_o
 
 
-# In[10]:
+# In[11]:
 
-p_keep_input = tf.placeholder("float")
 p_keep_hidden = tf.placeholder("float")
 
-h0 = model(X, p_keep_input, p_keep_hidden)
+h0 = model(X, p_keep_hidden)
 
 
-# In[11]:
+# In[12]:
 
 # Cross entropy cost/loss
 cost = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits=h0, labels=Y_one_hot))
 optimizer = tf.train.AdamOptimizer(learning_rate).minimize(cost)
 
 
-# In[12]:
+# In[13]:
 
 prediction = tf.argmax(h0, 1)
 correct_prediction = tf.equal(prediction, tf.argmax(Y_one_hot, 1))
@@ -129,7 +134,6 @@ accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
 print(train_x.shape, train_y.shape)
 print(test_x.shape, test_y.shape)
 print(X.shape, Y.shape)
-training_dropout_i = 0.95
 training_dropout_h = 0.95
 
 batch_size = 2000
@@ -146,7 +150,7 @@ with tf.Session() as sess:
             if batch_num % 200 == 0 or batch_num == batch_length - 1:
                 print("batch num : %d / %d, index: %d ~ %d" % (batch_num, batch_length - 1, start_idx, end_idx))
             
-            sess.run(optimizer, feed_dict={X: train_x[start_idx:end_idx], Y: train_y[start_idx:end_idx], p_keep_input: training_dropout_i, p_keep_hidden: training_dropout_h})
+            sess.run(optimizer, feed_dict={X: train_x[start_idx:end_idx], Y: train_y[start_idx:end_idx], p_keep_hidden: training_dropout_h})
 
         loss, acc = sess.run([cost, accuracy], feed_dict={
                                  X: train_x, Y: train_y, p_keep_input: training_dropout_i, p_keep_hidden: training_dropout_h})
@@ -161,9 +165,7 @@ with tf.Session() as sess:
     print(test_yy.shape)
     correct_prediction = tf.equal(pre, test_yy)
     accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
-    print('Test Accuracy:', sess.run(accuracy, feed_dict={X: test_x, 
-                                                         p_keep_input: 1.0,
-                                                         p_keep_hidden: 1.0}))
+    print('Test Accuracy:', sess.run(accuracy, feed_dict={X: test_x, p_keep_hidden: 1.0}))
 
 
 # In[15]:
@@ -177,4 +179,6 @@ plt.show()
 # In[16]:
 
 sess.close()
+end_time = time.time()
+print("processing time : %d seconds" % (end_time - start_time,))
 
