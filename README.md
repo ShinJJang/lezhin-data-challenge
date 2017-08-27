@@ -1,3 +1,6 @@
+# Deprecated!!
+초기 데이터셋에 오류가 있어 잘못된 분석입니다.
+
 # lezhin-data-challenge
 레진 데이터 챌린지 with 파이콘 한국 2017 
 
